@@ -96,10 +96,12 @@ for let i2 = 1, problem_list.len {
 	swap(problem_list, i, j)
 }
 
+//先頭のproblem_count個を使用
 for let i, problem_count {
 	problems.push(problem_list[i])
 }
 
+//問題のUIを格納する配列？
 let qaEls = [Ui:C:container({
 	align: 'center'
 	children: [
@@ -111,6 +113,7 @@ let qaEls = [Ui:C:container({
 	]
 })]
 
+//問題のUIをイテレーション
 var qn = 0
 each (let qa, problems) {
 	qn += 1
@@ -170,6 +173,7 @@ each (let qa, problems) {
 //終了時
 @finish() {
 	var score = 0
+	//正答と正誤を格納
 	let post_text = []
 	each (let qa, problems) {
 		let correct = qa.userAnswer == qa.ans
@@ -198,6 +202,7 @@ each (let qa, problems) {
 		})
 	}
 
+	//先頭の正答数を追加
 	post_text.unshift(`{title}の結果は{problems.len}問中{score}問正解でした。`)
 	let result = post_text.join(Str:lf)
 	

@@ -46,6 +46,7 @@ var qn = 0
 each (let qa, problems) {
 	qn += 1
 	qa.id = Util:uuid()
+	qa.problem_number = qn
 	qaEls.push(Ui:C:container({
 		align: 'center'
 		padding: 16
@@ -100,10 +101,15 @@ each (let qa, problems) {
 //終了時
 @finish() {
 	var score = 0
-
+	let post_text = []
 	each (let qa, problems) {
 		let correct = qa.userAnswer == qa.ans
-		if (correct) score += 1
+		if (correct) {
+			score += 1
+			post_text.push(`Q{qa.problem_number}: {qa.ans} 🎉正解`)
+		} else {
+			post_text.push(`Q{qa.problem_number}: {qa.ans} ✖不正解`)
+		}
 		let el = Ui:get(`{qa.id}:a`)
 		el.update({
 			children: [
@@ -123,7 +129,9 @@ each (let qa, problems) {
 		})
 	}
 
-	let result = `{title}の結果は{problems.len}問中{score}問正解でした。`
+	post_text.unshift(`{title}の結果は{problems.len}問中{score}問正解でした。`)
+	let result = post_text.join(Str:lf)
+	
 	Ui:get('footer').update({
 		children: [
 			Ui:C:postFormButton({

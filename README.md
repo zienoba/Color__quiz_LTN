@@ -1,5 +1,5 @@
 # Color__quiz_LTN
-LIVE THE@TER NEThttps://live-theater.net/で公開している
+LIVE THE@TER NET https://live-theater.net/ で公開している
 「このイメージカラーだ～れだ？」https://live-theater.net/play/aai155cwn3 というplayのソースコードです
 
 ## 参考資料

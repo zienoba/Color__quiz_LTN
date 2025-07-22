@@ -1,0 +1,153 @@
+/// @ 0.12.4
+
+let title = 'このイメージカラーだ～れだ？'
+//1段目の選択肢の配列
+let initial = [{text: 'あ～お', value: '0'}, {text: 'か～こ', value: '1'}, {text: 'さ～そ', value: '2'}, {text: 'た～と', value: '3'}, {text: 'な～の', value: '4'}, {text: 'は～ほ', value: '5'}, {text: 'ま～も', value: '6'}, {text: 'や～よ', value: '7'}, {text: 'ら～ろ', value: '8'}]
+//アイドル名の配列
+let idols = [['伊吹翼', 'エミリー', '大神環'], ['春日未来', '北上麗花', '北沢志保', '木下ひなた', '高坂海美'], ['桜守歌織', '佐竹美奈子', '篠宮可憐', '島原エレナ', 'ジュリア', '白石紬', '周防桃子'], ['高山紗代子', '田中琴葉', '天空橋朋花', '徳川まつり', '所恵美', '豊川風花'], ['中谷育', '永吉昴', '七尾百合子', '二階堂千鶴', '野々原茜'], ['箱崎星梨花', '馬場このみ', '福田のり子'], ['舞浜歩', '真壁瑞希', '松田亜利沙', '宮尾美也', '最上静香', '望月杏奈', '百瀬莉緒'], ['矢吹可奈', '横山奈緒'], ['ロコ']]
+//問題の配列
+let problem_list = [{ans: '伊吹翼', color: '#fed552'}, {ans: 'エミリー', color: '#554171'}, {ans: '大神環', color: '#ee762e'}, {ans: '春日未来', color: '#ea5b76'}, {ans: '北上麗花', color: '#6bb6b0'}, {ans: '北沢志保', color: '#afa690'}, {ans: '木下ひなた', color: '#d1342c'}, {ans: '高坂海美', color: '#e9739b'}, {ans: '桜守歌織', color: '#274079'}, {ans: '佐竹美奈子', color: '#58a6dc'}, {ans: '篠宮可憐', color: '#b63b40'}, {ans: '島原エレナ', color: '#9bce92'}, {ans: 'ジュリア', color: '#d7385f'}, {ans: '白石紬', color: '#b6b3e2'}, {ans: '周防桃子', color: '#efb864'}, {ans: '高山紗代子', color: '#7f6575'}, {ans: '田中琴葉', color: '#92cfbb'}, {ans: '天空橋朋花', color: '#bee3e3'}, {ans: '徳川まつり', color: '#5abfb7'}, {ans: '所恵美', color: '#454341'}, {ans: '豊川風花', color: '#7278a8'}, {ans: '中谷育', color: '#f7e78e'}, {ans: '永吉昴', color: '#aeb49c'}, {ans: '七尾百合子', color: '#c7b83c'}, {ans: '二階堂千鶴', color: '#f19557'}, {ans: '野々原茜', color: '#eb613f'}, {ans: '箱崎星梨花', color: '#ed90ba'}, {ans: '馬場このみ', color: '#f1becb'}, {ans: '福田のり子', color: '#eceb70'}, {ans: '舞浜歩', color: '#e25a9b'}, {ans: '真壁瑞希', color: '#99b7dc'}, {ans: '松田亜利沙', color: '#b54461'}, {ans: '宮尾美也', color: '#d7a96b'}, {ans: '最上静香', color: '#6495cf'}, {ans: '望月杏奈', color: '#7e6ca8'}, {ans: '百瀬莉緒', color: '#f19591'}, {ans: '矢吹可奈', color: '#f5ad3b'}, {ans: '横山奈緒', color: '#788bc5'}, {ans: 'ロコ', color: '#fff03c'}]
+//乱数生成器のseedを指定
+let random = Math:gen_rng(`{USER_ID}{Date:now()}`)
+//使用する問題
+let problems = []
+//問題数
+let problem_count = 5
+
+let swap = @(list, i, j){
+	let a = list[i]
+	list[i] = list[j]
+	list[j] = a
+}
+
+//配列をランダムにシャッフル（Fisher–Yates法）
+for let i2 = 1, problem_list.len {
+	let i = problem_list.len - i2
+	let j = Math:floor(random() * (i + 1))
+	swap(problem_list, i, j)
+}
+
+for let i, problem_count {
+	problems.push(problem_list[i])
+}
+
+let qaEls = [Ui:C:container({
+	align: 'center'
+	children: [
+		Ui:C:text({
+			size: 1.5
+			bold: true
+			text: title
+		})
+	]
+})]
+
+var qn = 0
+each (let qa, problems) {
+	qn += 1
+	qa.id = Util:uuid()
+	qaEls.push(Ui:C:container({
+		align: 'center'
+		padding: 16
+		rounded: true
+		children: [
+			Ui:C:text({
+				text: `Q{qn}`
+			})
+			Ui:C:container({
+				align: 'center'
+    		children: [
+    			//色提示の縦の長さを指定
+        	Ui:C:mfm({ text: [
+            	""
+            	""
+            	""
+            	""
+            	""
+            	""
+            	""
+            	""
+        	].join(Str:lf) })
+    		]
+				borderWidth: 4
+    		padding: 18
+    		rounded: true
+				bgColor: `{qa.color}`
+			})
+			Ui:C:text({
+				text: "頭文字"
+			})
+			Ui:C:select({
+				items: initial
+				onChange: @(u) { 
+					Ui:get(`second_selector:{qa.id}`).update({items: idols[u.to_num()].map(@(c) {{ text: c, value: c }})})
+				}
+			})
+			Ui:C:text({
+				text: "アイドル名"
+			})
+			Ui:C:select({
+				items: idols[0].map(@(c) {{ text: c, value: c }})
+				onChange: @(v) { qa.userAnswer = v }
+			}, `second_selector:{qa.id}`)
+			Ui:C:container({
+				children: []
+			} `{qa.id}:a`)
+		]
+	} qa.id))
+}
+
+//終了時
+@finish() {
+	var score = 0
+
+	each (let qa, problems) {
+		let correct = qa.userAnswer == qa.ans
+		if (correct) score += 1
+		let el = Ui:get(`{qa.id}:a`)
+		el.update({
+			children: [
+				Ui:C:text({
+					size: 1.2
+					bold: true
+					color: if (correct) '#f00' else '#00f'
+					text: if (correct) '🎉正解' else `✖不正解`
+				})
+				Ui:C:text({
+					size: 1.2
+					bold: true
+					color: if (correct) '#f00' else '#00f'
+					text: if (correct) '' else `正解:{qa.ans}`
+				})
+			]
+		})
+	}
+
+	let result = `{title}の結果は{problems.len}問中{score}問正解でした。`
+	Ui:get('footer').update({
+		children: [
+			Ui:C:postFormButton({
+				text: '結果を共有'
+				rounded: true
+				primary: true
+				form: {
+					text: `{result}{Str:lf}{THIS_URL} #Color2idol`
+				}
+			})
+		]
+	})
+}
+
+qaEls.push(Ui:C:container({
+	align: 'center'
+	children: [
+		Ui:C:button({
+			text: '答え合わせ'
+			primary: true
+			rounded: true
+			onClick: finish
+		})
+	]
+} 'footer'))
+
+Ui:render(qaEls)
